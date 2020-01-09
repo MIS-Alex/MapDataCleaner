@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/map_data_cleaner" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
