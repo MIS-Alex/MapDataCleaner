@@ -228,8 +228,7 @@ class MapDataCleaner:
 
                 file_path_list = filename.split('/')
                 file_name_list = file_path_list[-1].split('.')
-                output_layer = QgsVectorLayer(filename, file_name_list[0], 'ogr')
-                QgsProject.instance().addMapLayer(output_layer)
+                output_layer = QgsVectorLayer(filename, file_name_list[0] + '_raw', 'ogr')
 
                 fixed_geom_lyr = processing.run('qgis:fixgeometries', {'INPUT': output_layer, 'OUTPUT': 'memory:'})
                 QgsProject.instance().addMapLayer(fixed_geom_lyr['OUTPUT'])
