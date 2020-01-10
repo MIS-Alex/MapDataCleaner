@@ -24,7 +24,7 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
-from qgis.core import QgsProject, QgsMessageLog, QgsVectorLayer
+from qgis.core import QgsProject, QgsMessageLog, QgsVectorLayer, Qgis
 from qgis import processing
 
 # Initialize Qt resources from file resources.py
@@ -229,7 +229,11 @@ class MapDataCleaner:
                 file_path_list = filename.split('/')
                 file_name_list = file_path_list[-1].split('.')
                 output_layer = QgsVectorLayer(filename, file_name_list[0] + '_raw', 'ogr')
-
-                fixed_geom_lyr = processing.run('qgis:fixgeometries', {'INPUT': output_layer, 'OUTPUT': 'memory:'})
-                QgsProject.instance().addMapLayer(fixed_geom_lyr['OUTPUT'])
+                if int(Qgis.QGIS_VERSION.split('.')[1]) > 4:
+                    fixed_geom_lyr = processing.run('qgis:fixgeometries', {'INPUT': output_layer, 'OUTPUT': 'memory:'})
+                    QgsProject.instance().addMapLayer(fixed_geom_lyr['OUTPUT'])
+                else:
+                    from qgis.core import QgsApplication
+                    fixed_geom_lyr = QgsApplication.processing.runalg('qgis:fixgeometries', {'INPUT': output_layer, 'OUTPUT': 'memory:'})
+                    QgsProject.instance().addMapLayer(fixed_geom_lyr['OUTPUT'])
             pass
